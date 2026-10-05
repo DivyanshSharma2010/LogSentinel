@@ -1,12 +1,13 @@
 import re
 
-log_line = "main@myaddress.coms"
-pattern = r"^[a-zA-Z0-9\.\-_]+@{1}[a-zA-Z0-9]+\.{1}[a-zA-Z]{2,3}"
-match = re.search(pattern, log_line)
-if match:
-    print("Accepted")
-    print(match)
-else:
-    print("Rejected")
+log_line = "re whitespace CAPITAL 234543"
 
-print("hello, testing 1, 2, 3")
+pattern = re.compile(r"^(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\s+(\w+)\s+(.+)$")
+
+with open("server.log", "w") as file:
+    for line in file:
+        line = line.strip()
+        match = pattern.match(line)
+        if match:
+            timestamp, severity, message = match.groups()
+            print(f"[{timestamp}] {severity}: {message}")
