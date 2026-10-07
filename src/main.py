@@ -1,13 +1,13 @@
 import re
 
-log_line = "re whitespace CAPITAL 234543"
+log1 = "2026-10-01 08:15:23 INFO 192.168.1.10 user=alice login success"
+log2 = "2026-10-01 08:16:02 WARN 10.0.0.45 user=bob login failed"
+log3 = "2026-10-01 08:17:45 ERROR 172.16.254.1 user=admin file_access denied"
 
-pattern = re.compile(r"^(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\s+(\w+)\s+(.+)$")
+pattern = re.compile(r"(\d{4}\-\d{2}\-\d{2}) (\d{2}:\d{2}:\d{2}) (\w+) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) user=(\w+) (.*)")
 
-with open("server.log", "w") as file:
-    for line in file:
-        line = line.strip()
-        match = pattern.match(line)
-        if match:
-            timestamp, severity, message = match.groups()
-            print(f"[{timestamp}] {severity}: {message}")
+for log in [log1, log2, log3]:
+    match = pattern.search(log)
+    if match:
+        print(match.groups())
+
