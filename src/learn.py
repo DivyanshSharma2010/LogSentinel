@@ -21,62 +21,14 @@ logs = [
 # Level 2
 pattern = re.compile(r"(\d{4}\-\d{2}\-\d{2}) (\d{2}:\d{2}:\d{2}) (\w+) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) user(?:name)?=(\w+) action=(\w+)")
 pattern_level = re.compile(r"\b(ERROR|INFO|WARN|CRITICAL)\b")
-pattern_username = re.compile(r"user(?:name)?(?:=|:))(\w+)")
+pattern_username = re.compile(r"user(?:name)?(?:=|:)(\w+)")
 
 for log in logs:
     match_level = pattern_level.search(log)
     match_username = pattern_username.search(log)
 
     if match_username:
-        print(match_username.group(1))
+        print(match_username.group())
     else:
         print("No match found")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# pattern = re.compile(r"(\d{4}\-\d{2}\-\d{2}) (\d{2}:\d{2}:\d{2}) (\w+) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) user(?:name)?=(\w+) ")
-
-# Level 1: Extract all key=value pairs as dict
-# pattern_kvpair = re.compile(r"(\w+)=(\w+)")
-# pattern_level = re.compile(r"\s(INFO|WARN|ERROR|CRITICAL)\s")
-
-# for log in logs:
-#     match = pattern_kvpair.findall(log)
-#     dict_ = dict(match)
-    
-#     level_match = pattern_level.search(log)
-#     level = level_match.group(1) if level_match else None
-
-#     print(f"Level: {level}")
-#     print(f"Action: {dict_.get("action", "N/A")}")
-#     print(f"Error: {dict_.get("Error", "N/A")}")
-
-#     if level in ["CRITICAL", "ERROR"]:
-#         print(f"  ⚠️  ALERT - User: {dict_.get('user')}, Action: {dict_.get('action')}")
-
-#     print()
