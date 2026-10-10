@@ -14,4 +14,3 @@ DB_CONFIG = {
 
 LOG_FILE_PATH = os.getenv("LOG_FILE_PATH", "sample_logs.txt")
 RISK_THRESHOLD = int(os.getenv("RISK_THRESHOLD", 50))
-
