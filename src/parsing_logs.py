@@ -1,6 +1,6 @@
-import mysql.connector
 import os
 import re
+import pygrok
 from collections import Counter
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -19,14 +19,10 @@ def SSH_parsing():
         )
 
     MESSAGE_PATTERNS = [
-        ("login_successful", re.compile(
-            r"Accepted (?P<method>.*)"
-        ))
-
-        ("login_failed", re.compile(
-            r"Failed (?P<method>\S+)"
-        ))
+        ("ip_add", re.compile(r"\b\[\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\]\b"))
+        ("user", re.compile(r"\buser=(\w+)\b"))
     ]
+        
 
 with open(LOG_PATH, encoding="utf-8", errors="replace") as f:
     for line_number, line in enumerate(f, start=1):

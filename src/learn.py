@@ -38,3 +38,37 @@ import re
 # counts = Counter(ips)
 
 # print(counts["203.0.113.7"])
+
+# from pygrok import Grok
+# import csv
+
+# logs = [
+#     "Dec 10 07:28:19 LabSZ sshd[24259]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=112.95.230.3  user=root",
+#     "Dec 10 07:28:19 LabSZ sshd[24259]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=112.95.230.3  user=root",
+#     "Dec 10 07:29:10 LabSZ sshd[24260]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=188.10.10.5  user=admin"
+# ]
+
+# pattern = r"%{SYSLOGTIMESTAMP:timestamp} %{WORD:serverhost} %{WORD:app}\[%{NUMBER:processid}\]: %{GREEDYDATA:waste}: %{DATA:result}; %{GREEDYDATA:system_message}\s+ user=%{WORD:user}"
+
+# grok = Grok(pattern)
+
+# parsed_logs = []
+
+# for log in logs:
+#     match = grok.match(log)
+#     if match:
+#         parsed_logs.append(match)
+#     else:
+#         print("No matches")
+
+# if parsed_logs:
+#     # Get the headers dynamically from the first match keys
+#     headers = parsed_logs[0].keys()
+    
+#     with open('security_logs.csv', 'w', newline='') as csvfile:
+#         writer = csv.DictWriter(csvfile, fieldnames=headers)
+        
+#         writer.writeheader()  # Writes: timestamp, server_host, app...
+#         writer.writerows(parsed_logs)  # Writes the data
+        
+#     print("Success! Saved to security_logs.csv")
