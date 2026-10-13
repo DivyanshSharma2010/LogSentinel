@@ -31,7 +31,7 @@ def save_as_csv(data, filename):
                 writer = csv.writer(f)
                 writer.writerow(data)
 
-        print(f"✅ Success! Saved {len(data)} rows to '{filename}'")
+        print(f"Success! Saved {len(data)} rows to '{filename}'")
     except IOError as e:
         print(f"Error saving file: {e}")
 
