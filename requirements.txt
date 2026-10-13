@@ -1,3 +1,8 @@
+matplotlib==3.10.8
 mysql-connector-python==8.0.33
+numpy==2.2.6
+pandas==2.3.3
 protobuf==3.20.3
+pygrok==1.0.0
 python-dotenv==1.0.0
+regex==2026.9.29
