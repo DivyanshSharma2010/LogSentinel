@@ -16,21 +16,20 @@ conn = get_connection()
 cursor = conn.cursor()
 
 cursor.execute("""
-    CREATE TABLE IF NOT EXISTS students (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(50) NOT NULL,
-        marks INT NOT NULL
-    )
+    CREATE TABLE IF NOT EXISTS events (
+    id         BIGINT AUTO_INCREMENT PRIMARY KEY,
+    log_type   VARCHAR(20) NOT NULL,
+    event_time DATETIME NULL,
+    ip         VARCHAR(45),
+    username   VARCHAR(255),
+    event_type VARCHAR(32),
+    details    JSON,
+    raw_line   TEXT,
+    INDEX idx_ip_time (ip, event_time),
+    INDEX idx_type_event (log_type, event_type)
+);
 """)
 
-cursor.execute(
-    "INSERT INTO students (name, marks) VALUES (%s, %s)",
-    ("Aman", 88),
-)
-cursor.execute(
-    "INSERT INTO students (name, marks) VALUES (%s, %s)",
-    ("Riya", 91),
-)
 
 conn.commit()
 cursor.close()

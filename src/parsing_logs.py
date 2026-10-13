@@ -1,7 +1,8 @@
 import os
 import re
-from pygrok import Grok
 from collections import Counter
+from pygrok import Grok
+from saving import save_as_csv, save_as_json
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOG_PATH = os.path.join(BASE_DIR, "data", "OpenSSH_2k.log")
@@ -42,10 +43,14 @@ def SSH_parsing(log):
         **result
     }
 
+parsed_logs = []
 
 with open(LOG_PATH, encoding="utf-8", errors="replace") as f:
-    for line_number, line in enumerate(f, start=1):
-        pass
+    for line_number, log in enumerate(f, start=1):
+        x = SSH_parsing(log)
+        parsed_logs.append(x)
+
+save_as_json(parsed_logs, "SSH_parsedlogs")
 
 test = [
     'Dec 10 06:55:46 LabSZ sshd[24200]: reverse mapping checking getaddrinfo for ns.marryaldkfaczcz.com [173.234.31.186] failed - POSSIBLE BREAK-IN ATTEMPT!',
@@ -2055,4 +2060,4 @@ test = [
 for i in test:
     print(SSH_parsing(i))
 print(count)
-            
+
