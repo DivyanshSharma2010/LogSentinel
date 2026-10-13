@@ -1,7 +1,12 @@
 import os
 import re
+<<<<<<< Updated upstream
 import pygrok
 from collections import Counter
+=======
+from pygrok import Grok
+from saving import save_as_csv, save_as_json
+>>>>>>> Stashed changes
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOG_PATH = os.path.join(BASE_DIR, "data", "OpenSSH_2k.log")
@@ -18,15 +23,24 @@ def SSH_parsing():
         r"(?P<host>\S+)\s+sshd\[(?P<pid>\d+)\]:\s+(?P<message>.*)$"
         )
 
+<<<<<<< Updated upstream
     MESSAGE_PATTERNS = [
         ("ip_add", re.compile(r"\b\[\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\]\b"))
         ("user", re.compile(r"\buser=(\w+)\b"))
     ]
         
 
+=======
+parsed_logs = []
+>>>>>>> Stashed changes
 with open(LOG_PATH, encoding="utf-8", errors="replace") as f:
-    for line_number, line in enumerate(f, start=1):
-        pass
+    for line_number, log in enumerate(f, start=1):
+        x = SSH_parsing(log)
+        parsed_logs.append(x)
 
+<<<<<<< Updated upstream
 
             
+=======
+save_as_json(parsed_logs, "SSH_parsedlogs")
+>>>>>>> Stashed changes
