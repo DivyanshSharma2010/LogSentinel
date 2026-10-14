@@ -52,11 +52,11 @@ with open(LOG_PATH, encoding="utf-8", errors="replace") as f:
     for line_number, log in enumerate(f, start=1):
         entry = parse_ssh_line(log)
         if entry is not None:
+            entry["line_number"] = line_number
+            entry["raw_line"] = log.rstrip('\n')
             parsed_logs.append(entry)
         else:
             failed_count += 1
             print(f"Unparsed line {line_number}: {log.strip()}")
 
-
-save_as_json(parsed_logs, "SSH_parsedlogs")
 print(failed_count)
