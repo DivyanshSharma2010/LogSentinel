@@ -1,11 +1,13 @@
 import os
 import re
 from pygrok import Grok
-from saving import save_as_json
+import json
+from db import insert_events
 
 # Getting the relative path of Data
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOG_PATH = os.path.join(BASE_DIR, "data", "OpenSSH_2k.log")
+SOURCE_FILE = os.path.relpath(LOG_PATH, BASE_DIR)
 
 if not os.path.exists(LOG_PATH):
     raise SystemExit(f"FILE NOT FOUND: {LOG_PATH}")
@@ -44,10 +46,9 @@ def parse_ssh_line(log):
         **result
     }
 
-    
-# Appending the Parsed Logs
 parsed_logs = []
-failed_count = 0 # Number of Failed Unparsed Logs 
+failed_count = 0 # Number of Failed Unparsed Logs
+
 with open(LOG_PATH, encoding="utf-8", errors="replace") as f:
     for line_number, log in enumerate(f, start=1):
         entry = parse_ssh_line(log)
@@ -59,4 +60,5 @@ with open(LOG_PATH, encoding="utf-8", errors="replace") as f:
             failed_count += 1
             print(f"Unparsed line {line_number}: {log.strip()}")
 
-print(failed_count)
+insert_events(parsed_logs, source_file=SOURCE_FILE)
+print(f"Parsed: {len(parsed_logs)} | Unparsed: {failed_count}")
