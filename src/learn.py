@@ -72,3 +72,14 @@ import re
 #         writer.writerows(parsed_logs)  # Writes the data
         
 #     print("Success! Saved to security_logs.csv")
+
+from pygrok import Grok
+
+def with_return(x):
+    return {"value": x}
+
+def without_return(x):
+    y = {"value": x}      # built, but never handed back
+
+print(with_return(5))
+print(without_return(5))
