@@ -3,11 +3,11 @@ import mysql.connector
 from dotenv import load_dotenv
 import json
 
-COLUMN_KEY = {"parsed", "event_type", "date_timestamp", "process", "ip", "raw_line", "log_type"}
+COLUMN_KEY = {"parsed", "line_number", "event_type", "date_timestamp", "process", "ip", "raw_line", "log_type"}
 
 INSERT_EVENT = """
     INSERT INTO events
-        (line_number, event_type, timestamp_raw, log_type, process, ip, details, raw_line, source_file)
+        (line_number, event_type, event_time, log_type, process, ip, details, raw_line, source_file)
     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
     ON DUPLICATE KEY UPDATE id = id
 """
@@ -25,11 +25,21 @@ def get_connection():
 def row_from_entry(entry, source_file):
     details = {k:v for k,v in entry.items() if k not in COLUMN_KEY}
     return (
-        entry["line_number"], None, entry["date_timestamp"], "ssh", entry["process"], entry["ip"], json.dumps(details), entry["raw_line"], source_file
+        # entry["line_number"], None, entry["date_timestamp"], "ssh", entry["process"], entry["ip"], json.dumps(details), entry["raw_line"], source_file
+        entry.get("line_number"), 
+        entry.get("event_type","unclassified"), 
+        entry.get("date_timestamp"), 
+        entry.get("log_type", "unkown"), 
+        entry.get("process"), 
+        entry.get("ip"), 
+        json.dumps(details),
+        entry.get("raw_line"), 
+        source_file,
     )
     
 
 def insert_events(entries, source_file):
+
     rows = []
     for e in entries:
         row = row_from_entry(e, source_file)

@@ -73,13 +73,41 @@ import re
         
 #     print("Success! Saved to security_logs.csv")
 
-from pygrok import Grok
+# from pygrok import Grok
 
-def with_return(x):
-    return {"value": x}
+# def with_return(x):
+#     return {"value": x}
 
-def without_return(x):
-    y = {"value": x}      # built, but never handed back
+# def without_return(x):
+#     y = {"value": x}      # built, but never handed back
 
-print(with_return(5))
-print(without_return(5))
+# print(with_return(5))
+# print(without_return(5))
+
+# from datetime import datetime
+
+# raw_ts = "Dec 10 06:55:46"
+# print(raw_ts.split())
+# default_yr = "2026"
+# clean_ts = " ".join(raw_ts.split())
+# full_ts = default_yr + clean_ts
+
+# raw_log_date = "2026-10-15 20:45:00"
+
+# date_obj = datetime.strptime(raw_log_date, "%Y-%m-%d %H:%M:%S")
+# print(type(date_obj))  
+# print(date_obj.year) 
+
+# now = datetime.now()
+# friendly_text = now.strftime("%A, %B %d, %Y")
+# print(friendly_text)
+
+import os
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+LOG_DIR = os.path.join(BASE_DIR, "data")
+for filename in os.listdir(LOG_DIR):
+    file_path = os.path.join(LOG_DIR, filename)
+    source_name = os.path.relpath(file_path, BASE_DIR)
+    print(source_name)
+    print(file_path)
