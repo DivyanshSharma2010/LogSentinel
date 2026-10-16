@@ -6,7 +6,7 @@ load_dotenv(os.path.join("BASE_DIR", ".env"))
 
 DB_CONFIG = {
     "host": os.getenv("DB_HOST", "localhost"),
-    "PORT": int(os.getenv("DB_PORT", "3306")),
+    "port": int(os.getenv("DB_PORT", "3306")),
     "user": os.getenv("DB_USER"),
     "password": os.getenv("DB_PASSWORD"),
     "database": os.getenv("DB_DATABASE"),

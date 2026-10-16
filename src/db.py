@@ -37,7 +37,6 @@ def row_from_entry(entry, source_file):
         source_file,
     )
     
-
 def insert_events(entries, source_file):
 
     rows = []

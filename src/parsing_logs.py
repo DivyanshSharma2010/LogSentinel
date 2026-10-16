@@ -36,6 +36,7 @@ APACHE_GROK = Grok(APACHE_HEADER_PATTERN)
 IP_PATTERN = re.compile(r"(?<![\d.])(?:\d{1,3}\.){3}\d{1,3}(?![\d.])")
 UFW_KV_PATTERN = re.compile(r"(\b[A-Za-z_]+)=([^\s]+)")
 
+# Adds a default year to timestamp if not present, and normalizes it to "YYYY-MM-DD HH:MM:SS" format
 def normalize_timestamp(raw_ts, fmt = "%b %d %H:%M:%S", default_year = 2026):
     try: 
         clean_ts = " ".join(raw_ts.split())
@@ -43,11 +44,11 @@ def normalize_timestamp(raw_ts, fmt = "%b %d %H:%M:%S", default_year = 2026):
         return dt.strftime("%Y-%m-%d %H:%M:%S")
     except ValueError:
         return raw_ts
-
+    
+# Converts "15/Oct/2026:20:15:02 +0000" -> "2026-10-15 20:15:02"
 def normalize_apache_timestamp(raw_ts):
-    # Converts "15/Oct/2026:20:15:02 +0000" -> "2026-10-15 20:15:02"
     try:
-        clean_ts = raw_ts.split()[0] # Strip timezone offset like +0000
+        clean_ts = raw_ts.split()[0]
         dt = datetime.strptime(clean_ts, "%d/%b/%Y:%H:%M:%S")
         return dt.strftime("%Y-%m-%d %H:%M:%S")
     except ValueError:
