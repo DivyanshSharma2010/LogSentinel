@@ -15,13 +15,14 @@ DB_CONFIG = {
 RISK_THRESHOLD = 70
 
 EVENTS_WEIGHT = {
-    "accepted password": 0,
-    "session opened": 0,
-    "failed login": 10,
-    "connection closed": 15,
-    "received disconnect": 15,
-    "authentication failure": 35,
-    "invalid user": 40,
+    "accepted_login": 0,
+    "session_opened": 0,
+    "failed_login": 10,
+    "connection_closed": 15,
+    "received_disconnect": 15,
+    "authentication_failure": 35,
+    "invalid_user": 40,
+    "unusual_hour": 40,
     "maximum authentication attempts exceeded": 60,
     "possible break-in attempt": 60,
     "root login refused": 60,
@@ -35,3 +36,6 @@ HIGH_RISK_USER_BONUS = 25
 # Brute-force repetition settings
 BRUTE_FORCE_LIMIT = 5
 BRUTE_FORCE_BONUS = 30
+
+# OFF Hours
+OFF_HOURS_BONUS = 25

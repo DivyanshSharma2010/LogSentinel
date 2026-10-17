@@ -102,12 +102,88 @@ import re
 # friendly_text = now.strftime("%A, %B %d, %Y")
 # print(friendly_text)
 
-import os
+# import os
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-LOG_DIR = os.path.join(BASE_DIR, "data")
-for filename in os.listdir(LOG_DIR):
-    file_path = os.path.join(LOG_DIR, filename)
-    source_name = os.path.relpath(file_path, BASE_DIR)
-    print(source_name)
-    print(file_path)
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# LOG_DIR = os.path.join(BASE_DIR, "data")
+# for filename in os.listdir(LOG_DIR):
+#     file_path = os.path.join(LOG_DIR, filename)
+#     source_name = os.path.relpath(file_path, BASE_DIR)
+#     print(source_name)
+#     print(file_path)
+
+# import re
+
+# USER_PATTERN_SSH = re.compile(
+#     r"(?:"
+#     r"(?:invalid|authenticating)\s+user\s+"
+#     r"|(?:failed|accepted)\s+\S+\s+for\s+(?:invalid\s+user\s+)?"
+#     r"|session\s+(?:opened|closed)\s+for\s+user\s+"
+#     r"|\br?user="
+#     r")"
+#     r"(?!unknown\b|invalid\b)"
+#     r"(?P<username>[a-zA-Z0-9_.\-\$]+)",
+#     re.IGNORECASE
+# )
+
+# test_logs = [
+#     "Dec 10 06:55:46 LabSZ sshd[24200]: Invalid user webmaster from 173.234.31.186",
+#     "Dec 10 06:55:48 LabSZ sshd[24200]: Failed password for invalid user admin from 127.0.0.1",
+#     "Dec 10 07:07:38 LabSZ sshd[24206]: input_userauth_request: invalid user test9 [preauth]"
+# ]
+
+# for log in test_logs:
+#     match = USER_PATTERN_SSH.search(log)
+#     print(f"Extracted Name: {match.group('username') if match else 'FAILED'}")
+
+
+def unassemble(log):
+
+    result = SYSLOG_GROK.match(log)
+    if result is None:
+        return None
+
+    result["date_timestamp"] = normalize_timestamp(result["date_timestamp"]) # Adding year to timestamp
+    msg = result.get("message","")
+    msg_lower = msg.lower()
+
+    ip_match = IP_PATTERN.search(msg)
+    extracted_ip = ip_match.group() if ip_match else None
+
+    username_match = USER_PATTERN_SSH.search(msg)
+    extracted_username = username_match.group("username") if username_match else None
+
+    if "failed password" in msg_lower:
+            event_type = "failed login"
+    elif "invalid user" in msg_lower:
+        event_type = "invalid user"
+    elif "authentication failure" in msg_lower:
+            event_type = "authentication failure"
+    elif "accepted password" in msg_lower or "accepted publickey" in msg_lower:
+        event_type = "accepted login"
+    else:
+        event_type = "unclassified"
+
+    return{
+        'username': extracted_username,
+        'ip': extracted_ip,
+        'event_type': event_type,
+        **result,
+    }
+
+score = 0
+
+for log in logs:
+
+    dict_1 = unassemble(log)
+
+    if dict_1['username'] in HIGH_RISK_USER:
+        score += HIGH_RISK_USER_BONUS
+
+    if any(key.lower() in dict_1['event_type'].lower() for key in EVENTS_WEIGHT):
+        matching_key = next(key for key in EVENTS_WEIGHT if key.lower() in dict_1['event_type'].lower())
+        score += EVENTS_WEIGHT[matching_key]
+
+    print(score)
+    score = 0
+    

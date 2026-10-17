@@ -3,12 +3,12 @@ import mysql.connector
 from dotenv import load_dotenv
 import json
 
-COLUMN_KEY = {"parsed", "line_number", "event_type", "date_timestamp", "process", "ip", "raw_line", "log_type"}
+COLUMN_KEY = {"parsed", "line_number", "event_type", "date_timestamp", "process", "ip", "username", "raw_line", "log_type"}
 
 INSERT_EVENT = """
     INSERT INTO events
-        (line_number, event_type, event_time, log_type, process, ip, details, raw_line, source_file)
-    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        (line_number, event_type, event_time, log_type, process, ip, username, details, raw_line, source_file)
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
     ON DUPLICATE KEY UPDATE id = id
 """
 
@@ -32,6 +32,7 @@ def row_from_entry(entry, source_file):
         entry.get("log_type", "unkown"), 
         entry.get("process"), 
         entry.get("ip"), 
+        entry.get("username"),
         json.dumps(details),
         entry.get("raw_line"), 
         source_file,
@@ -57,3 +58,12 @@ def insert_events(entries, source_file):
         cursor.close()
         conn.close()
     
+# def call_parsed_logs(entries):
+#     conn = get_connection()
+#     cursor = conn.cursor()
+
+#     sql_query = """SELECT id, log_type, event_time, ip, event_type, details, raw_line, process 
+#     FROM events WHERE is_analyzed = 0 ORDER BY id ASC LIMIT 500;"""
+
+#     try:
+#         logs = cursor.execute(sql_query)
