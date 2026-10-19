@@ -72,6 +72,29 @@ def parse_ssh_line(log):
     # Check if it's a UFW Firewall log inside Syslog
     if "[UFW" in msg:
         kv_pairs = dict(UFW_KV_PATTERN.findall(msg))
+        dst_port = kv_pairs.get("DPT")
+        proto = kv_pairs.get("PROTO")
+
+        event_type = "ufw_block"
+        if "ALLOW" in msg:
+            event_type = "ufw_allow"
+        elif proto == "2" or kv_pairs.get("DST") == "224.0.0.1":
+            event_type = "ufw_block_multicast"
+        elif dst_port == "443" and ("ACK FIN" in msg or "RST" in msg):
+            event_type = "ufw_block_https_noise"
+        elif proto == "UDP" and dst_port and dst_port.isdigit() and 33434 <= int(dst_port) <= 33534:
+            event_type = "ufw_block_traceroute"
+        elif dst_port in {"5060", "389"}:
+            event_type = "ufw_block_voip_ldap"
+        elif dst_port in {"22", "3389", "5900", "21", "2121"}:
+            event_type = "ufw_block_remote_admin"
+        elif dst_port in {"1433", "3306", "5432", "6379", "27017", "11211"}:
+            event_type = "ufw_block_database"
+        elif dst_port in {"23", "2323"}:
+            event_type = "ufw_block_telnet_iot"
+        elif dst_port in {"2375", "2376", "6443", "9200"}:
+            event_type = "ufw_block_critical_api"
+        
         return {
             "parsed": True,
             "log_type": "firewall",
@@ -119,13 +142,37 @@ def parse_web_access_line(log):
     if result is None:
         return None
 
-    status = int(result.get("response", 0))
     request_path = result.get("request") or result.get("rawrequest") or ""
+    request_lower = request_path.lower()
+    status = int(result.get("response", 0))
 
-    if status in (401, 403):
+    # Critical Payloads
+    if any(cmd in request_lower for cmd in [";ls", "|cat", "&&", "/bin/sh", "cmd.exe"]):
+        event_type = "web_cmd_injection"
+    elif any(sql in request_lower for sql in ["union select", "or 1=1", "information_schema", "sleep("]):
+        event_type = "web_sql_injection"
+    elif any(pt in request_lower for pt in ["../", "..%2f", "/etc/passwd", "boot.ini"]):
+        event_type = "web_path_traversal"
+    elif any(xss in request_lower for xss in ["<script", "%3cscript", "javascript:", "onerror="]):
+        event_type = "web_xss_attempt"
+    
+    # Scanners & Probes
+    elif any(probe in request_lower for probe in [".env", ".git", "wp-admin", "phpmyadmin", "config", ".bak"]):
+        event_type = "web_sensitive_probe"
+    
+    # Status Code Behaviors
+    elif status >= 500:
+        event_type = "web_server_error"
+    elif status in (401, 403):
         event_type = "web_auth_failure"
-    elif "../" in request_path or "UNION SELECT" in request_path.upper():
-        event_type = "web_attack_payload"
+    elif status == 404:
+        event_type = "web_not_found"
+    
+    # Safe / Noise Traffic
+    elif request_lower == "/site/ping" or (result.get("verb") == "HEAD" and request_lower == "/"):
+        event_type = "web_health_check"
+    elif "/login" in request_lower or "/customer/register" in request_lower or "/signin" in request_lower:
+        event_type = "web_account_endpoint"
     else:
         event_type = "web_access"
 

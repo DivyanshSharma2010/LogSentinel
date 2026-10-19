@@ -25,7 +25,6 @@ def get_connection():
 def row_from_entry(entry, source_file):
     details = {k:v for k,v in entry.items() if k not in COLUMN_KEY}
     return (
-        # entry["line_number"], None, entry["date_timestamp"], "ssh", entry["process"], entry["ip"], json.dumps(details), entry["raw_line"], source_file
         entry.get("line_number"), 
         entry.get("event_type","unclassified"), 
         entry.get("date_timestamp"), 
