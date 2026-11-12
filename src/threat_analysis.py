@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
 import mysql.connector
-from pygrok import Grok
 
 load_dotenv(override=True)
 
