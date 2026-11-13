@@ -12,7 +12,6 @@ SYSLOG_REGEX = re.compile(
     r"(?P<message>.*)$"
 )
 
-
 def parse_syslog_header(log):
     """Pulls the timestamp, hostname, process and message out of a syslog line.
     Returns None if the line doesn't look like syslog at all."""
