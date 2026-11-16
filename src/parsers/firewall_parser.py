@@ -3,7 +3,6 @@ from parsers.common import parse_syslog_header, normalize_timestamp
 
 UFW_KV_PATTERN = re.compile(r"(\b[A-Za-z_]+)=([^\s]+)")
 
-
 def parse_firewall_line(log):
     """Parses a UFW firewall line. Returns None if the line isn't a UFW log."""
 
