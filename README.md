@@ -34,27 +34,23 @@ Threat Detection System based on reading, parsing and evaluating log lines from 
    ```
    This creates a `LogSentinel` database with two tables: `events` (every parsed log line) and `quarantine` (high-risk lines only).
 
-4. **Configure your environment**
+44. **Configure your environment**
 
    Copy the example env file and fill in your own MySQL credentials:
+
+   **macOS/Linux:**
    ```bash
    cp .env.example .env
    ```
-   Then edit `.env`:
-   ```env
-   DB_HOST=localhost
-   DB_USER=your_mysql_username
-   DB_PASSWORD=your_mysql_password
-   DB_NAME=logsentinel
+
+   **Windows (Command Prompt):**
+   ```cmd
+   copy .env.example .env
    ```
-   `.env` is already excluded by `.gitignore`, so your credentials are never committed.
 
 5. **Add your log files**
 
-   Create a `data/` folder in the project root and place your log files inside it. LogSentinel will process every file it finds there — plain-text logs and `.csv` files are both supported.
-   ```bash
-   mkdir data
-   # copy your .log / .txt / .csv files into data/
+   # copy your .log / .txt / .csv files into data/ which is already created in the project
    ```
 
 6. **Run it**
@@ -106,6 +102,26 @@ LogSentinel/
         ├── web_parser.py        # Apache/Nginx access log parser
         ├── json_parser.py       # single-line JSON app log parser
         └── keyvalue_parser.py   # key=value app log parser
+
+## Troubleshooting
+
+**Windows: `'mysql' is not recognized as an internal or external command`**
+
+This means MySQL is installed, but its `bin` folder isn't in your Windows PATH, so the terminal can't find the `mysql` command. Two options:
+
+1. **One-off fix** — run the command using the full path to `mysql.exe` instead of just `mysql`. It's usually somewhere like: C:\Program Files\MySQL\MySQL Server <version>\bin\mysql.exe
+
+Example:
+```powershell
+"C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" -u root -p < src/schema.sql
+```
+
+2. **Permanent fix** — add that `bin` folder to your PATH environment variable:
+- Search "Edit the system environment variables" in the Start menu
+- Environment Variables → select `Path` under System variables → Edit → New → paste the `bin` folder path → OK
+- Close and reopen your terminal, then `mysql` will work normally from anywhere.
+
+If `mysql.exe` doesn't exist anywhere on your machine at all, you likely only installed MySQL Workbench (a GUI) and not MySQL Server itself — install MySQL Server from [dev.mysql.com](https://dev.mysql.com/downloads/mysql/), or just load `src/schema.sql` through MySQL Workbench's "Run SQL Script" option instead of the command line.
 
 ## License
 
