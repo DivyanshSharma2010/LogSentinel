@@ -47,8 +47,19 @@ EVENTS_WEIGHT = {
     "ufw_block_multicast": 0,
     "ufw_allow": 0,
     
+    # App Events (JSON and key=value application logs)
+    "login_failed": 10,
+    "login_success": 0,
+    "download_failed": 15,
+    "download_success": 0,
+    "upload_failed": 15,
+    "upload_success": 0,
+    "file_access_denied": 20,
+    "file_access_granted": 0,
+    "brute_force": 60,
+
     # Fallback
-    "unclassified": 0   
+    "unclassified": 0 
 }
 
 HIGH_RISK_AGENTS = ["sqlmap", "nikto", "nmap", "curl", "wget", "python", "dirbuster", "gobuster", "hydra"]
