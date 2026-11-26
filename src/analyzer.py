@@ -56,7 +56,7 @@ def calculate_risk_score(dict_1):
     ts_str = dict_1.get("date_timestamp", "")
     try:
         hour = datetime.strptime(ts_str, "%Y-%m-%d %H:%M:%S").hour
-        if hour >= OFF_HOURS_START and hour <= OFF_HOURS_END:
+        if hour >= OFF_HOURS_START or hour <= OFF_HOURS_END:
             score += OFF_HOURS_BONUS 
             reasons.append("off_hours_activity")
     except ValueError:

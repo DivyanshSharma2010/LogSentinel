@@ -42,7 +42,7 @@ def parse_firewall_line(log):
     return {
         "parsed": True,
         "log_type": "firewall",
-        "event_type": "ufw_block" if "BLOCK" in msg else "ufw_allow",
+        "event_type": event_type,
         "date_timestamp": normalize_timestamp(header.get("date_timestamp")),
         "process": header.get("process", "kernel"),
         "ip": kv_pairs.get("SRC"),
