@@ -14,7 +14,6 @@ USER_PATTERN_SSH = re.compile(
     re.IGNORECASE
 )
 
-
 def parse_ssh_line(log):
     """Parses an SSH/auth syslog line. Returns None if the line isn't SSH,
     including when it's actually a UFW firewall line on the same syslog format."""

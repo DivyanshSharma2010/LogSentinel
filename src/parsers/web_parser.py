@@ -13,7 +13,6 @@ WEB_ACCESS_REGEX = re.compile(
     r'(?:\s+"(?P<referrer>[^"]*)"\s+"(?P<agent>[^"]*)")?'
 )
 
-
 def parse_web_header(log):
     """Pulls the IP, timestamp, request and status out of a web access line.
     Returns None if the line doesn't look like a web access log at all."""
@@ -23,7 +22,6 @@ def parse_web_header(log):
         return None
     return match.groupdict()
 
-
 def normalize_apache_timestamp(raw_ts):
     """Converts '15/Oct/2026:20:15:02 +0000' -> '2026-10-15 20:15:02'"""
     try:
@@ -32,7 +30,6 @@ def normalize_apache_timestamp(raw_ts):
         return dt.strftime("%Y-%m-%d %H:%M:%S")
     except ValueError:
         return raw_ts
-
 
 def parse_web_access_line(log):
     """Parses a web (Apache/Nginx style) access log line."""

@@ -12,7 +12,6 @@ KV_HEADER_REGEX = re.compile(
 # Matches both "key=value" and "key:value" pairs inside the rest of the line
 KV_PAIR_REGEX = re.compile(r"([A-Za-z_]+)\s*[:=]\s*(\S+)")
 
-
 def parse_keyvalue_line(log):
     """Parses a generic key=value application log line.
     Returns None if the line doesn't match this format."""

@@ -21,7 +21,6 @@ def parse_syslog_header(log):
         return None
     return match.groupdict()
 
-
 def normalize_timestamp(raw_ts, fmt="%b %d %H:%M:%S", default_year=2026):
     """Adds a default year to a syslog timestamp and normalizes it to YYYY-MM-DD HH:MM:SS"""
     try:

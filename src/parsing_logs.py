@@ -8,7 +8,6 @@ from config import RISK_THRESHOLD
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOG_DIR = os.path.join(BASE_DIR, "data")
 
-
 def read_lines_from_file(file_path):
     """Reads a file and yields (line_number, raw_text) pairs.
     Works for plain text log files, and for CSV files where each row
